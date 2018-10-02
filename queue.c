@@ -27,7 +27,9 @@ queue_t *q_new()
     queue_t *q = malloc(sizeof(queue_t));
     /* What if malloc returned NULL? */
 
+    q->size = 0;
     q->head = NULL;
+    q->tail = NULL;
     return q;
 }
 
@@ -53,11 +55,18 @@ bool q_insert_head(queue_t *q, char *s)
     newh = malloc(sizeof(list_ele_t));
     /* Don't forget to allocate space for the string and copy it */
     /* What if either call to malloc returns NULL? */
-    if (newh == NULL) return false;
+    if (newh == NULL)
+        return false;
     char *val;
     val = strdup(s);
-    if (val == NULL) return false;
+    if (val == NULL)
+        return false;
 
+    /* update queue size and head/ tail pointer */
+    q->size++;
+    /* To do: remove if statement to get stable line count */
+    if (q->size <= 1)
+        q->tail = newh;
 
     newh->next = q->head;
     newh->value = val;
@@ -77,7 +86,26 @@ bool q_insert_tail(queue_t *q, char *s)
 {
     /* You need to write the complete code for this function */
     /* Remember: It should operate in O(1) time */
-    return false;
+    list_ele_t *newh;
+    newh = malloc(sizeof(list_ele_t));
+    if (newh == NULL)
+        return false;
+
+    char *val;
+    val = strdup(s);
+    if (val == NULL)
+        return false;
+
+    q->size++;
+    if (q->size <= 1)
+        q->head = newh;
+
+    q->tail->next = newh;
+    newh->value = val;
+    newh->next = NULL;
+    q->tail = newh;
+
+    return true;
 }
 
 /*
@@ -91,6 +119,8 @@ bool q_insert_tail(queue_t *q, char *s)
 bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
 {
     /* You need to fix up this code. */
+    /* return false if queue is NULL or empty */
+
     q->head = q->head->next;
     return true;
 }
