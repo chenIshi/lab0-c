@@ -59,8 +59,10 @@ bool q_insert_head(queue_t *q, char *s)
         return false;
     char *val;
     val = strdup(s);
-    if (val == NULL)
+    if (val == NULL) {
+        free(newh);
         return false;
+    }
 
     /* update queue size and head/ tail pointer */
     q->size++;
@@ -93,8 +95,10 @@ bool q_insert_tail(queue_t *q, char *s)
 
     char *val;
     val = strdup(s);
-    if (val == NULL)
+    if (val == NULL) {
+        free(newh);
         return false;
+    }
 
     q->size++;
     if (q->size <= 1)
@@ -120,8 +124,24 @@ bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
 {
     /* You need to fix up this code. */
     /* return false if queue is NULL or empty */
+    if (q == NULL)
+        return false;
+    if (q->size <= 1)
+        q->tail = NULL;
 
+    list_ele_t *free_ptr = q->head;
     q->head = q->head->next;
+
+    q->size--;
+    // to do: unstable if execution time
+    if (strlen(free_ptr->value) >= bufsize) {
+        strncpy(sp, free_ptr->value, bufsize - 1);
+        sp[bufsize] = '\0';
+    } else {
+        strncpy(sp, free_ptr->value, bufsize);
+    }
+    free(free_ptr);
+
     return true;
 }
 
@@ -146,4 +166,5 @@ int q_size(queue_t *q)
 void q_reverse(queue_t *q)
 {
     /* You need to write the code for this function */
+
 }
