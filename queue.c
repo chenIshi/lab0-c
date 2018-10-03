@@ -173,14 +173,6 @@ bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
     strncpy(sp, free_ptr->value, str_len);
     sp[str_len] = '\0';
 
-    /*
-    if (strlen(free_ptr->value) >= bufsize) {
-        strncpy(sp, free_ptr->value, bufsize - 1);
-        sp[bufsize] = '\0';
-    } else {
-        strncpy(sp, free_ptr->value, bufsize);
-    }
-    */
     free(free_ptr);
 
     return true;
