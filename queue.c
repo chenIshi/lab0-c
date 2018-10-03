@@ -27,6 +27,9 @@ queue_t *q_new()
     queue_t *q = malloc(sizeof(queue_t));
     /* What if malloc returned NULL? */
 
+    if (q == NULL)
+        return NULL;
+
     q->size = 0;
     q->head = NULL;
     q->tail = NULL;
@@ -64,6 +67,9 @@ bool q_insert_head(queue_t *q, char *s)
 {
     list_ele_t *newh;
     /* What should you do if the q is NULL? */
+    if (q == NULL)
+        return false;
+
     newh = malloc(sizeof(list_ele_t));
     /* Don't forget to allocate space for the string and copy it */
     /* What if either call to malloc returns NULL? */
@@ -101,6 +107,9 @@ bool q_insert_tail(queue_t *q, char *s)
     /* You need to write the complete code for this function */
     /* Remember: It should operate in O(1) time */
     list_ele_t *newh;
+    if (q == NULL)
+        return false;
+
     newh = malloc(sizeof(list_ele_t));
     if (newh == NULL)
         return false;
@@ -141,17 +150,37 @@ bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
     if (q->size <= 1)
         q->tail = NULL;
 
+    if (q->head == NULL && q->tail == NULL)
+        return false;
+
     list_ele_t *free_ptr = q->head;
     q->head = q->head->next;
 
     q->size--;
+
+    if (sp == NULL) {
+        free(free_ptr);
+        return true;
+    }
     // to do: unstable if execution time
+    size_t str_len;
+    if (strlen(free_ptr->value) >= bufsize) {
+        str_len = bufsize - 1;
+    } else {
+        str_len = strlen(free_ptr->value);
+    }
+
+    strncpy(sp, free_ptr->value, str_len);
+    sp[str_len] = '\0';
+
+    /*
     if (strlen(free_ptr->value) >= bufsize) {
         strncpy(sp, free_ptr->value, bufsize - 1);
         sp[bufsize] = '\0';
     } else {
         strncpy(sp, free_ptr->value, bufsize);
     }
+    */
     free(free_ptr);
 
     return true;
@@ -165,6 +194,9 @@ int q_size(queue_t *q)
 {
     /* You need to write the code for this function */
     /* Remember: It should operate in O(1) time */
+    if (q == NULL)
+        return 0;
+
     return q->size;
 }
 
@@ -178,6 +210,10 @@ int q_size(queue_t *q)
 void q_reverse(queue_t *q)
 {
     /* You need to write the code for this function */
+
+    if (q == NULL)
+        return;
+
     list_ele_t *current;
     list_ele_t *temp;
     list_ele_t *prev;
